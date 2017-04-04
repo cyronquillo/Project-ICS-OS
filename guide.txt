@@ -1,0 +1,17 @@
+PROJECT CHOICES:
+>>>>ICS-OS REVAMPING
+	if GCC is 5.x and above, remove 'inline' words in all files
+	Makefile - for 32 bit
+	Makefile.Ubuntu.... - for 64 bit OS
+
+	ERRORS ENCOUNTERED (possible):
+		mounting: sudo umount -l ./mnt
+		sys/cded.h: install libc 6-dev-i386
+
+
+	to add changes:
+		go to
+			ics-os/kernel/console/console.c 
+
+>>>>> CREATING YOUR OWN OS WITH GUI
+ics-os/contrib contains all the examples
