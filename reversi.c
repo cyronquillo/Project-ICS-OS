@@ -5,6 +5,8 @@
 #define BLANK '-'
 #define TRUE 1
 #define FALSE 0
+#define CHECK 0
+#define PERFORM 1
 
 char matrix[8][8];
 
@@ -12,7 +14,8 @@ void printMatrix();
 void initMatrix();
 void startGame();
 int isValid(int row, int col);
-int checkAdjacents(int row, int col, int rowInc, int colInc, int color, int rowOrig, int colOrig);
+int listPossibleMoves(char color);
+int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action);
 int matrixIsNotFull();
 
 int main(){
@@ -23,14 +26,19 @@ int main(){
 void startGame(){
 	int i, j, row = 0, column = 0, turnCounter = 0;
 	char move;
+	int possible;
 	while(matrixIsNotFull()){
 		printMatrix(*(&matrix));
 		move = turnCounter %2 == 0? WHITE: BLACK;
 
 		if(move == WHITE) printf("--- White Turn (1) ---\n");
-		else printf("--- Black Turn (-1) ---\n");
-
+		else printf("--- Black Turn (0) ---\n");
+		if(listPossibleMoves(move) == 0){
+			turnCounter++;
+			continue;
+		}
 		while(1){
+			possible = 0;
 			printf("Enter Row[1-8]: ");
 			scanf("%d", &row);
 			row -= 1;
@@ -46,19 +54,19 @@ void startGame(){
 				continue;
 			}
 		
-			if ( 	checkAdjacents(row-1, column-1, -1, -1,move , row, column) ||
-					checkAdjacents(row-1, column  , -1,  0,move , row, column) ||
-					checkAdjacents(row-1, column+1, -1,  1,move , row, column) ||
-					checkAdjacents(row  , column-1,  0, -1,move , row, column) ||
-					checkAdjacents(row  , column+1,  0,  1,move , row, column) ||
-					checkAdjacents(row+1, column-1,  1, -1,move , row, column) ||
-					checkAdjacents(row+1, column  ,  1,  0,move , row, column) ||
-					checkAdjacents(row+1, column+1,  1,  1,move , row, column)){
+			if (checkAdjacents(row-1, column-1, -1, -1,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row-1, column  , -1,  0,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row-1, column+1, -1,  1,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row  , column-1,  0, -1,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row  , column+1,  0,  1,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row+1, column-1,  1, -1,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row+1, column  ,  1,  0,move , row, column, PERFORM)) possible = 1;
+			if (checkAdjacents(row+1, column+1,  1,  1,move , row, column, PERFORM)) possible = 1;
+			if(possible == 1){
 				matrix[row][column] = move;	
 				turnCounter++;
 				break;
-			}
-			else{
+			} else{
 				printf("No flipping occurred!\n");
 			}
 		}
@@ -67,20 +75,46 @@ void startGame(){
 }
 
 
-int checkAdjacents(int row, int col, int rowInc, int colInc, int color, int rowOrig, int colOrig){
+int listPossibleMoves(char color){
+	int counter = 0;
+	int row, column;
+	for(row = 0; row < 8; row++){
+		for(column = 0; column < 8; column++){
+			if(matrix[row][column] != BLANK) continue;
+			if ( 	checkAdjacents(row-1, column-1, -1, -1,color , row, column, CHECK) ||
+					checkAdjacents(row-1, column  , -1,  0,color , row, column, CHECK) ||
+					checkAdjacents(row-1, column+1, -1,  1,color , row, column, CHECK) ||
+					checkAdjacents(row  , column-1,  0, -1,color , row, column, CHECK) ||
+					checkAdjacents(row  , column+1,  0,  1,color , row, column, CHECK) ||
+					checkAdjacents(row+1, column-1,  1, -1,color , row, column, CHECK) ||
+					checkAdjacents(row+1, column  ,  1,  0,color , row, column, CHECK) ||
+					checkAdjacents(row+1, column+1,  1,  1,color , row, column, CHECK)){
+				counter +=1;
+				if(counter == 1) printf("List of Possible Moves: \n");
+				printf("(%d, %d)\n",row+1,column+1);
+			}
+		}
+	}
+
+	return counter;
+}
+
+int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action){
 	if(row < 0 || row > 7 || col  < 0 || col > 7) return 0;
 	if(matrix[row][col] == color && (rowOrig + rowInc == row) && (colOrig + colInc == col)) return 0;
 	if(matrix[row][col] == BLANK) return 0; 
 	if(matrix[row][col] == color){
 		// change all values :D
-		while(row != rowOrig || col != colOrig){
-			matrix[row][col] = color;
-			row -= rowInc;
-			col -= colInc;
+		if(action == PERFORM){
+			while(row != rowOrig || col != colOrig){
+				matrix[row][col] = color;
+				row -= rowInc;
+				col -= colInc;
+			}
 		}
 		return 1;
 	}
-	checkAdjacents(row +rowInc, col + colInc, rowInc, colInc, color, rowOrig, colOrig);
+	checkAdjacents(row +rowInc, col + colInc, rowInc, colInc, color, rowOrig, colOrig, action);
 }
 void printMatrix(){
 	int i, j;
