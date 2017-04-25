@@ -37,24 +37,30 @@ void startGame(){
 			printf("Enter Column[1-8]: ");
 			scanf("%d", &column);
 			column -= 1;
-			if(row < 0 || row > 7 || column  < 0 || column > 7) printf("Invalid Input! \n");
-			else if(matrix[row][column] != BLANK) printf("Space already occupied!\n");
-			else break;
-		}
+			if(row < 0 || row > 7 || column  < 0 || column > 7) {
+				printf("Invalid Input! \n");
+				continue;
+			}
+			else if(matrix[row][column] != BLANK){
+				printf("Space already occupied!\n");
+				continue;
+			}
 		
-		if ( 	checkAdjacents(row-1, column-1, -1, -1,move , row, column) ||
-				checkAdjacents(row-1, column  , -1,  0,move , row, column) ||
-				checkAdjacents(row-1, column+1, -1,  1,move , row, column) ||
-				checkAdjacents(row  , column-1,  0, -1,move , row, column) ||
-				checkAdjacents(row  , column+1,  0,  1,move , row, column) ||
-				checkAdjacents(row+1, column-1,  1, -1,move , row, column) ||
-				checkAdjacents(row+1, column  ,  1,  0,move , row, column) ||
-				checkAdjacents(row+1, column+1,  1,  1,move , row, column)){
-			matrix[row][column] = move;	
-			turnCounter++;
-		}
-		else{
-			printf("Invalid choice of coordinates!\n");
+			if ( 	checkAdjacents(row-1, column-1, -1, -1,move , row, column) ||
+					checkAdjacents(row-1, column  , -1,  0,move , row, column) ||
+					checkAdjacents(row-1, column+1, -1,  1,move , row, column) ||
+					checkAdjacents(row  , column-1,  0, -1,move , row, column) ||
+					checkAdjacents(row  , column+1,  0,  1,move , row, column) ||
+					checkAdjacents(row+1, column-1,  1, -1,move , row, column) ||
+					checkAdjacents(row+1, column  ,  1,  0,move , row, column) ||
+					checkAdjacents(row+1, column+1,  1,  1,move , row, column)){
+				matrix[row][column] = move;	
+				turnCounter++;
+				break;
+			}
+			else{
+				printf("No flipping occurred!\n");
+			}
 		}
 
 	}
