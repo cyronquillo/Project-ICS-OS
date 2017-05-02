@@ -1,0 +1,19 @@
+Snake Game for ICS-OS
+--------------------------------
+
+1. Extract from within ics-os source dir.
+
+   $tar xzvf snake.tar.gz
+   $cd contrib/snake
+   $make
+   $make install
+
+2. Perform the steps to install ics-os.
+   $cd ../..
+   $sudo make install 
+
+3. Run snake.exe inside ics-os
+
+Enjoy!
+
+jachermocilla@gmail.com

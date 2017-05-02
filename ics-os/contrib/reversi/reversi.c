@@ -1,9 +1,13 @@
+#include "../../sdk/dexsdk.h"
+#include "../../sdk/time.h"
 
-#include <stdio.h>
 #define WHITE '1'
 #define BLACK '0'
 #define BLANK '-'
-#define CURRENT '^'
+#define CURRENT '*'
+#define UP 'a'
+#define DOWN 'd'
+#define DROP ' '
 #define TRUE 1
 #define FALSE 0
 #define CHECK 0
@@ -20,6 +24,7 @@ int listPossibleMoves(char color);
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action);
 int matrixIsNotFull();
 void displayMoves(int k);
+int boardCleared();
 
 int main(){
 	initMatrix();	
@@ -27,14 +32,12 @@ int main(){
 }
 
 void startGame(){
+	char keypress;
 	int i, j, row = 0, column = 0, turnCounter = 0;
 	char move;
 	int possible;
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
-
-		if(move == WHITE) printf("--- White Turn (1) ---\n");
-		else printf("--- Black Turn (0) ---\n");
 		if(listPossibleMoves(move) == 0){
 			turnCounter++;
 			continue;
@@ -46,17 +49,19 @@ void startGame(){
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = CURRENT;
 				printMatrix(*(&matrix));
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = BLANK;
-				displayMoves(k);
-				printf("[1] Up\n[2] Down\n[3] Drop\nChoice: ");
-				scanf("%d",&choice);
-				if(choice == 1){
+				// displayMoves(k);
+				if(move == WHITE) printf("--- White Turn (1) ---\n");
+				else printf("--- Black Turn (0) ---\n");
+				printf("[a] Up\t[d] Down\t [Space] Drop\n");
+				keypress=(char)getch();
+				if(keypress == UP){
 					k = k-1;
 					if(k == -1) k = moveCounter-1;
 				} 
-				if(choice == 2){
+				if(keypress == DOWN){
 					k = (k+1) % moveCounter;
 				}
-			} while(choice!=3);
+			} while(keypress!=DROP);
 			
 			row = possibleMoves[k][0];
 			column = possibleMoves[k][1];
@@ -87,9 +92,28 @@ void startGame(){
 		}
 
 	}
+	checkWinner();
 }
 
 
+int checkWinner(){
+	int black = 0;
+	int white = 0;
+	int i,j;
+	for(i = 0; i < 8; i++){
+		for(j = 0; j < 8; j++){
+			black += (matrix[i][j] == BLACK)?1:0;
+			white += (matrix[i][j] == WHITE)?1:0;
+		}
+	}
+	printf("BLACK: %d WHITE: %d\n",black,white);
+	if(black > white) 
+		printf("BLACK WINS!\n");
+	else if(white > black) 
+		printf("WHITE WINS!\n");
+	else 
+		printf("DRAW!\n");
+}
 int listPossibleMoves(char color){
 	moveCounter = 0;
 	int row, column;
@@ -105,7 +129,7 @@ int listPossibleMoves(char color){
 					checkAdjacents(row+1, column  ,  1,  0,color , row, column, CHECK) ||
 					checkAdjacents(row+1, column+1,  1,  1,color , row, column, CHECK)){
 				moveCounter +=1;
-				if(moveCounter == 1) printf("List of Possible Moves: \n");
+				// if(moveCounter == 1) printf("List of Possible Moves: \n");
 				possibleMoves[moveCounter-1][0] = row;
 				possibleMoves[moveCounter-1][1] = column;
 			}
@@ -143,7 +167,7 @@ int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int row
 }
 void printMatrix(){
 	int i, j;
-
+	printf("\n\n\t");
 	printf("\n\t");
 	for(i = 1; i < 9; i++) printf("%d\t", i);
 	printf("\n\n");
