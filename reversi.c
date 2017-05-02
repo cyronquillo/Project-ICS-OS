@@ -3,13 +3,15 @@
 #define WHITE '1'
 #define BLACK '0'
 #define BLANK '-'
+#define CURRENT '^'
 #define TRUE 1
 #define FALSE 0
 #define CHECK 0
 #define PERFORM 1
 
 char matrix[8][8];
-
+int possibleMoves[64][2];
+int moveCounter;
 void printMatrix();
 void initMatrix();
 void startGame();
@@ -17,6 +19,7 @@ int isValid(int row, int col);
 int listPossibleMoves(char color);
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action);
 int matrixIsNotFull();
+void displayMoves(int k);
 
 int main(){
 	initMatrix();	
@@ -28,7 +31,6 @@ void startGame(){
 	char move;
 	int possible;
 	while(matrixIsNotFull()){
-		printMatrix(*(&matrix));
 		move = turnCounter %2 == 0? WHITE: BLACK;
 
 		if(move == WHITE) printf("--- White Turn (1) ---\n");
@@ -38,13 +40,26 @@ void startGame(){
 			continue;
 		}
 		while(1){
-			possible = 0;
-			printf("Enter Row[1-8]: ");
-			scanf("%d", &row);
-			row -= 1;
-			printf("Enter Column[1-8]: ");
-			scanf("%d", &column);
-			column -= 1;
+			int choice;
+			int k = 0;
+			do{
+				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = CURRENT;
+				printMatrix(*(&matrix));
+				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = BLANK;
+				displayMoves(k);
+				printf("[1] Up\n[2] Down\n[3] Drop\nChoice: ");
+				scanf("%d",&choice);
+				if(choice == 1){
+					k = k-1;
+					if(k == -1) k = moveCounter-1;
+				} 
+				if(choice == 2){
+					k = (k+1) % moveCounter;
+				}
+			} while(choice!=3);
+			
+			row = possibleMoves[k][0];
+			column = possibleMoves[k][1];
 			if(row < 0 || row > 7 || column  < 0 || column > 7) {
 				printf("Invalid Input! \n");
 				continue;
@@ -76,7 +91,7 @@ void startGame(){
 
 
 int listPossibleMoves(char color){
-	int counter = 0;
+	moveCounter = 0;
 	int row, column;
 	for(row = 0; row < 8; row++){
 		for(column = 0; column < 8; column++){
@@ -89,14 +104,24 @@ int listPossibleMoves(char color){
 					checkAdjacents(row+1, column-1,  1, -1,color , row, column, CHECK) ||
 					checkAdjacents(row+1, column  ,  1,  0,color , row, column, CHECK) ||
 					checkAdjacents(row+1, column+1,  1,  1,color , row, column, CHECK)){
-				counter +=1;
-				if(counter == 1) printf("List of Possible Moves: \n");
-				printf("(%d, %d)\n",row+1,column+1);
+				moveCounter +=1;
+				if(moveCounter == 1) printf("List of Possible Moves: \n");
+				possibleMoves[moveCounter-1][0] = row;
+				possibleMoves[moveCounter-1][1] = column;
 			}
 		}
 	}
 
-	return counter;
+	return moveCounter;
+}
+
+void displayMoves(int k){
+	int i = 0;
+	for(i = 0; i < moveCounter; i++){
+		printf("(%d, %d)",possibleMoves[i][0]+1,possibleMoves[i][1]+1);
+		if(i == k) printf(" <");
+		printf("\n");
+	}
 }
 
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action){
