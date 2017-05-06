@@ -60,7 +60,7 @@ int bulbs_y[maxrow][maxcol];
 
 int main()
 {
-  
+
 	char keypress = start;
 	int i,j;
 	char str[15];
