@@ -138,10 +138,13 @@ void startGame(){
 
 	}
 	checkWinner();
+	keypress=(char)getch();
 }
 
 
 int checkWinner(){
+	char blackCount[5];
+	char whiteCount[5];
 	int black = 0;
 	int white = 0;
 	int i,j;
@@ -151,13 +154,23 @@ int checkWinner(){
 			white += (matrix[i][j] == WHITE)?1:0;
 		}
 	}
-	printf("BLACK: %d WHITE: %d\n",black,white);
-	if(black > white) 
-		printf("BLACK WINS!\n");
+	erase(5,30,105,150);
+	write_text("Black: ", 5,30,WHITE_COLOR,0);
+	sprintf(blackCount,"%d", black);
+	write_text(blackCount, 80,30,WHITE_COLOR,0);
+	write_text("White: ", 5, 50,WHITE_COLOR,0);
+	sprintf(whiteCount,"%d", white);
+	write_text(whiteCount, 80,50,WHITE_COLOR,0);
+	//printf("BLACK: %d WHITE: %d\n",black,white);
+	if(black > white)
+		write_text("Black Wins!", 10, 80,WHITE_COLOR,1); 
+		//printf("BLACK WINS!\n");
 	else if(white > black) 
-		printf("WHITE WINS!\n");
-	else 
-		printf("DRAW!\n");
+		write_text("White Wins!", 10, 80,WHITE_COLOR,1); 
+		//printf("WHITE WINS!\n");
+	else
+		write_text("Draw", 10, 80,WHITE_COLOR,1);  
+		//printf("DRAW!\n");
 }
 int listPossibleMoves(char color){
 	moveCounter = 0;
@@ -262,7 +275,7 @@ void erase(int x, int y, int w, int h){
 
 printMenu(){
 	int i;
-	for(i=0;i<317;i+=6){
+	/*for(i=0;i<317;i+=6){
 		write_pixel(i,0,WHITE_COLOR);
 		write_pixel(i+1,0,WHITE_COLOR);
 		write_pixel(i+2,0,WHITE_COLOR);
@@ -271,7 +284,7 @@ printMenu(){
 		write_pixel(i,0,BLUE_COLOR);
 		write_pixel(i+1,0,BLUE_COLOR);
 		write_pixel(i+2,0,BLUE_COLOR);
-	}
+	}*/
 	write_text("---REVERSI---", 105,40,WHITE_COLOR,1);
 
 	write_text("S - Start", 120,100,WHITE_COLOR,0);
