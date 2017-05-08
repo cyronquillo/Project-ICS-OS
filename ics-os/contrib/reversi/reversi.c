@@ -29,6 +29,7 @@
 //---------------------------
 
 char matrix[8][8];
+char prevMatrix[8][8];
 int possibleMoves[64][2];
 int moveCounter;
 void printMatrix();
@@ -41,7 +42,7 @@ int matrixIsNotFull();
 void displayMoves(int k);
 int boardCleared();
 int checkWinner();
-
+void createPrevState();
 //-----------------------------
 void erase();
 void printInitialBoard(char move);
@@ -90,9 +91,11 @@ void startGame(){
 			int choice;
 			int k = 0;
 			do{
+				createPrevState();
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = CURRENT;
 				printBoard(move);				
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = BLANK;
+				// createPrevState(); 
 				//printInitialBoard(move);
 				keypress=(char)getch();
 				if(keypress == UP){
@@ -117,7 +120,7 @@ void startGame(){
 				printf("Space already occupied!\n");
 				continue;
 			}
-		
+			createPrevState();
 			if (checkAdjacents(row-1, column-1, -1, -1,move , row, column, PERFORM)) possible = 1;
 			if (checkAdjacents(row-1, column  , -1,  0,move , row, column, PERFORM)) possible = 1;
 			if (checkAdjacents(row-1, column+1, -1,  1,move , row, column, PERFORM)) possible = 1;
@@ -346,6 +349,7 @@ void printBoard(char move){
 
 	for(i=0;i<8;i++){
 		for(j=0;j<8;j++){
+			// if(prevMatrix[i][j] == matrix[i][j]) continue;
 			if(matrix[i][j] == WHITE){
 				printPiece(i,j,WHITE);
 			}
@@ -419,6 +423,15 @@ void printPiece(int x, int y, int color){
 	write_pixel(verticalBoundPairEnd+3,yPosVerticalDownBound-3, bordercolor);
 }
 
+
+void createPrevState(){
+	int i,j;
+	for(i = 0; i < 8; i++){
+		for(j = 0; j < 8; j++){
+			prevMatrix[i][j] = matrix[i][j];
+		}
+	}
+}
 void erasePiece(int x, int y){
 	int i, j;
 	int startXErase = 114 + (x*24);
