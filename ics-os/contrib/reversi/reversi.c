@@ -67,6 +67,7 @@ int main(){
 		erase(0,0,320,200);
 
 		if(keypress == START_GAME){
+			initMatrix();
 			startGame();
 		}
 	}while(keypress != EXIT_GAME);
@@ -140,12 +141,14 @@ void startGame(){
 		}
 
 	}
+	printBoard(move);					
 	checkWinner();
 	keypress=(char)getch();
 }
 
 
 int checkWinner(){
+
 	char blackCount[5];
 	char whiteCount[5];
 	int black = 0;
