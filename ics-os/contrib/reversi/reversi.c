@@ -114,10 +114,7 @@ void startGame(){
 					erasePiece(possibleMoves[k][0],possibleMoves[k][1]);
 					k = (k+1) % moveCounter;
 				}
-				if(keypress == EXIT_GAME){
-					return;
-				}
-				if(keypress == RESET){
+				if(keypress == EXIT_GAME || keypress == RESET){
 					return;
 				}
 			} while(keypress!=DROP);
@@ -154,7 +151,6 @@ void startGame(){
 	}
 	printBoard(move);					
 	checkWinner();
-	keypress=(char)getch();
 }
 
 
@@ -188,6 +184,11 @@ int checkWinner(){
 	else
 		write_text("Draw", 10, 80,WHITE_COLOR,1);  
 		//printf("DRAW!\n");
+	write_text("press any", 5, 170,WHITE_COLOR,0);
+	write_text("key to ", 5, 180,WHITE_COLOR,0);
+	write_text("exit...", 5, 190,WHITE_COLOR,0);
+	keypress=(char)getch();
+	keypress = EXIT_GAME;
 }
 int listPossibleMoves(char color){
 	moveCounter = 0;
