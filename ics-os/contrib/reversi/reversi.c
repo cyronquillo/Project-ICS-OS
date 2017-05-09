@@ -45,7 +45,7 @@ int checkWinner();
 void createPrevState();
 //-----------------------------
 void erase();
-void printInitialBoard(char move);
+void printInitialBoard();
 void printPiece(int x, int y, int color);
 void erasePiece(int x, int y);
 void printBoard(char move);
@@ -59,8 +59,8 @@ int main(){
 	//set_coordinates(X_coord, Y_coord);
 	
 
-	initMatrix();
 	do{
+		initMatrix();
 		erase(0,0,320,200);
 		printMenu();
 		keypress=(char)getch();
@@ -80,29 +80,33 @@ void startGame(){
 	int i, j, row = 0, column = 0, turnCounter = 0;
 	char move;
 	int possible;
+	printInitialBoard();
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
 		if(listPossibleMoves(move) == 0){
 			turnCounter++;
 			continue;
 		}
-		printInitialBoard(move);
 		while(1){
+			printBoard(move);
 			int choice;
 			int k = 0;
 			do{
 				createPrevState();
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = CURRENT;
-				printBoard(move);				
+				//printBoard(move);
+				printPiece(possibleMoves[k][0],possibleMoves[k][1],GRAY_COLOR);
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = BLANK;
 				// createPrevState(); 
 				//printInitialBoard(move);
 				keypress=(char)getch();
 				if(keypress == UP){
+					erasePiece(possibleMoves[k][0],possibleMoves[k][1]);
 					k = k-1;
 					if(k == -1) k = moveCounter-1;
 				} 
 				if(keypress == DOWN){
+					erasePiece(possibleMoves[k][0],possibleMoves[k][1]);
 					k = (k+1) % moveCounter;
 				}
 				if(keypress == EXIT_GAME){
@@ -112,6 +116,7 @@ void startGame(){
 			
 			row = possibleMoves[k][0];
 			column = possibleMoves[k][1];
+			printPiece(row,column,move);
 			if(row < 0 || row > 7 || column  < 0 || column > 7) {
 				printf("Invalid Input! \n");
 				continue;
@@ -136,7 +141,7 @@ void startGame(){
 			} else{
 				printf("No flipping occurred!\n");
 			}
-			printBoard(move);
+			
 		}
 
 	}
@@ -218,6 +223,7 @@ int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int row
 		if(action == PERFORM){
 			while(row != rowOrig || col != colOrig){
 				matrix[row][col] = color;
+				printPiece(row,col,color);
 				row -= rowInc;
 				col -= colInc;
 			}
@@ -294,15 +300,15 @@ printMenu(){
 	write_text("E - Exit", 120, 130,WHITE_COLOR,0);
 }
 
-void printInitialBoard(char move){
+void printInitialBoard(){
 	int i,j;
-	erase(5,30,50,10);
+	/*erase(5,30,50,10);
 	if(move == WHITE){
 		write_text("WHITE TURN", 5,30,WHITE_COLOR,0);
 	}
 	else{
 		write_text("BLACK TURN", 5,30,WHITE_COLOR,0);
-	}
+	}*/
 	write_text("A-Up", 5,45,WHITE_COLOR,0);
 	write_text("D-Down", 5,55,WHITE_COLOR,0);
 	write_text("Space-Drop", 5,65,WHITE_COLOR,0);
@@ -334,11 +340,24 @@ void printInitialBoard(char move){
 		write_pixel(i,172,WHITE_COLOR);
 		write_pixel(i,196,WHITE_COLOR);
 	}
-	printBoard(move);
+
+	for(i=0;i<8;i++){
+		for(j=0;j<8;j++){
+			if(matrix[i][j] == WHITE){
+				printPiece(i,j,WHITE);
+			}
+			else if(matrix[i][j] == BLACK){
+				printPiece(i,j,BLACK);
+			}
+		}
+	}
+	//printBoard(move);
 }
 
 void printBoard(char move){
 	int i,j;
+
+	erase(5,30,50,10);
 
 	if(move == WHITE){
 		write_text("WHITE TURN", 5,30,WHITE_COLOR,0);
@@ -347,7 +366,7 @@ void printBoard(char move){
 		write_text("BLACK TURN", 5,30,WHITE_COLOR,0);
 	}
 
-	for(i=0;i<8;i++){
+	/*for(i=0;i<8;i++){
 		for(j=0;j<8;j++){
 			// if(prevMatrix[i][j] == matrix[i][j]) continue;
 			if(matrix[i][j] == WHITE){
@@ -363,7 +382,7 @@ void printBoard(char move){
 				erasePiece(i,j);
 			}
 		}
-	}
+	}*/
 }
 
 void printPiece(int x, int y, int color){
