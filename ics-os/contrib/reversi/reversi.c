@@ -392,12 +392,12 @@ void printPiece(int x, int y, int color){
 
 	//int bordercolor = color == WHITE? BLACK_COLOR: WHITE_COLOR;
 
-	int i, j, bordercolor;
+	int i, j, bordercolor, fillcolor;
 
 	switch(color){
-		case WHITE: bordercolor = WHITE_COLOR;break;
-		case BLACK: bordercolor = BLACK_COLOR;break;
-		case GRAY_COLOR: bordercolor = GRAY_COLOR;break;
+		case WHITE: bordercolor = BLACK_COLOR;fillcolor = WHITE_COLOR;break;
+		case BLACK: bordercolor = WHITE_COLOR;fillcolor = BLACK_COLOR;break;
+		case GRAY_COLOR: bordercolor = GRAY_COLOR;fillcolor = GRAY_COLOR;break;
 	}
 
 	int verticalBoundPairStart = 120 + (x*24) - 1;
@@ -424,9 +424,15 @@ void printPiece(int x, int y, int color){
 	write_pixel(verticalBoundPairEnd+2,yPosVerticalTopBound+3, bordercolor);
 	write_pixel(verticalBoundPairEnd+3,yPosVerticalTopBound+3, bordercolor);
 
-	for(i=4;i<14;i++){
-		write_pixel(verticalBoundPairStart-3,yPosVerticalTopBound+i, bordercolor);
-		write_pixel(verticalBoundPairEnd+3,yPosVerticalTopBound+i, bordercolor);
+	write_pixel(verticalBoundPairStart-4,yPosVerticalTopBound+4, bordercolor);
+	write_pixel(verticalBoundPairStart-3,yPosVerticalTopBound+4, bordercolor);
+	write_pixel(verticalBoundPairEnd+3,yPosVerticalTopBound+4, bordercolor);
+	write_pixel(verticalBoundPairEnd+4,yPosVerticalTopBound+4, bordercolor);
+
+
+	for(i=5;i<13;i++){
+		write_pixel(verticalBoundPairStart-4,yPosVerticalTopBound+i, bordercolor);
+		write_pixel(verticalBoundPairEnd+4,yPosVerticalTopBound+i, bordercolor);
 	}
 
 	write_pixel(verticalBoundPairStart-1,yPosVerticalDownBound-1, bordercolor);
@@ -443,6 +449,33 @@ void printPiece(int x, int y, int color){
 	write_pixel(verticalBoundPairStart-2,yPosVerticalDownBound-3, bordercolor);
 	write_pixel(verticalBoundPairEnd+2,yPosVerticalDownBound-3, bordercolor);
 	write_pixel(verticalBoundPairEnd+3,yPosVerticalDownBound-3, bordercolor);
+
+	write_pixel(verticalBoundPairStart-4,yPosVerticalDownBound-4, bordercolor);
+	write_pixel(verticalBoundPairStart-3,yPosVerticalDownBound-4, bordercolor);
+	write_pixel(verticalBoundPairEnd+3,yPosVerticalDownBound-4, bordercolor);
+	write_pixel(verticalBoundPairEnd+4,yPosVerticalDownBound-4, bordercolor);
+
+	for(i=verticalBoundPairStart+1; i<verticalBoundPairEnd;i++){
+		write_pixel(i, yPosVerticalTopBound+1,fillcolor);
+		write_pixel(i, yPosVerticalDownBound-1,fillcolor);
+	}
+	for(i=verticalBoundPairStart; i<verticalBoundPairEnd+1;i++){
+		write_pixel(i, yPosVerticalTopBound+2,fillcolor);
+		write_pixel(i, yPosVerticalDownBound-2,fillcolor);
+	}
+	for(i=verticalBoundPairStart-1; i<verticalBoundPairEnd+2;i++){
+		write_pixel(i, yPosVerticalTopBound+3,fillcolor);
+		write_pixel(i, yPosVerticalDownBound-3,fillcolor);
+	}
+	for(i=verticalBoundPairStart-2; i<verticalBoundPairEnd+3;i++){
+		write_pixel(i, yPosVerticalTopBound+4,fillcolor);
+		write_pixel(i, yPosVerticalDownBound-4,fillcolor);
+	}
+	for(i=5;i<12;i++){
+		for(j=verticalBoundPairStart-3; j<verticalBoundPairEnd+4;j++){
+			write_pixel(j, yPosVerticalTopBound+i,fillcolor);
+		}
+	}
 }
 
 
