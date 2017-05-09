@@ -32,6 +32,8 @@ char matrix[8][8];
 char prevMatrix[8][8];
 int possibleMoves[64][2];
 int moveCounter;
+int blackCounter;
+int whiteCounter;
 void printMatrix();
 void initMatrix();
 void startGame();
@@ -217,6 +219,17 @@ void displayMoves(int k){
 	}
 }
 
+int count(){
+	blackCounter = 0;
+	whiteCounter = 0;
+	int i,j;
+	for(i = 0; i < 8; i++){
+		for(j = 0; j < 8;j++){
+			if(matrix[i][j] == BLACK)blackCounter++;
+			if(matrix[i][j] == WHITE)whiteCounter++;
+		}
+	}
+}
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action){
 	if(row < 0 || row > 7 || col  < 0 || col > 7) return 0;
 	if(matrix[row][col] == color && (rowOrig + rowInc == row) && (colOrig + colInc == col)) return 0;
@@ -314,7 +327,8 @@ void printInitialBoard(){
 	}*/
 	write_text("A-Up", 5,45,WHITE_COLOR,0);
 	write_text("D-Down", 5,55,WHITE_COLOR,0);
-	write_text("Space-Drop", 5,65,WHITE_COLOR,0);
+	write_text("E-Exit", 5,65,WHITE_COLOR,0);
+	write_text("Space-Drop", 5,75,WHITE_COLOR,0);
 
 	for(i=5;i<196;i++){
 		for(j=114;j<305;j++){
@@ -360,7 +374,11 @@ void printInitialBoard(){
 void printBoard(char move){
 	int i,j;
 
+	char blackcounter[5];
+	char whitecounter[5];
+
 	erase(5,30,50,10);
+	erase(5,95,80,20);
 
 	if(move == WHITE){
 		write_text("WHITE TURN", 5,30,WHITE_COLOR,0);
@@ -368,6 +386,18 @@ void printBoard(char move){
 	else{
 		write_text("BLACK TURN", 5,30,WHITE_COLOR,0);
 	}
+
+	count();
+	sprintf(blackcounter,"%d",blackCounter);
+	sprintf(whitecounter,"%d",whiteCounter);
+
+	write_text("Black: ", 5, 95, WHITE_COLOR,0);
+	write_text(blackcounter, 80, 95, WHITE_COLOR,0);
+
+	write_text("White: ", 5, 105, WHITE_COLOR,0);
+	write_text(whitecounter, 80, 105, WHITE_COLOR,0);
+
+
 
 	/*for(i=0;i<8;i++){
 		for(j=0;j<8;j++){
