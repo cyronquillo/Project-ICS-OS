@@ -69,9 +69,16 @@ int main(){
 		erase(0,0,320,200);
 
 		if(keypress == START_GAME){
-			initMatrix();
-			startGame();
+			while(1){
+				initMatrix();
+				startGame();
+				if(keypress == EXIT_GAME){
+					keypress = START_GAME;
+					break;
+				}
+			}
 		}
+		
 	}while(keypress != EXIT_GAME);
 
 	set_graphics(VGA_TEXT80X25X16);
@@ -111,11 +118,10 @@ void startGame(){
 					return;
 				}
 				if(keypress == RESET){
-					initMatrix();
-					// return;
+					return;
 				}
-			} while(keypress!=DROP || keypress == RESET);
-			if(keypress == RESET) continue;
+			} while(keypress!=DROP);
+
 			row = possibleMoves[k][0];
 			column = possibleMoves[k][1];
 			printPiece(row,column,move);
@@ -165,7 +171,7 @@ int checkWinner(){
 			white += (matrix[i][j] == WHITE)?1:0;
 		}
 	}
-	erase(5,30,105,140);
+	erase(5,30,105,200);
 	write_text("Black: ", 5,30,WHITE_COLOR,0);
 	sprintf(blackCount,"%d", black);
 	write_text(blackCount, 80,30,WHITE_COLOR,0);
