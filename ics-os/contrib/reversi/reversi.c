@@ -378,7 +378,7 @@ void printBoard(char move){
 	char whitecounter[5];
 
 	erase(5,30,50,10);
-	erase(5,95,80,20);
+	erase(5,95,95,20);
 
 	if(move == WHITE){
 		write_text("WHITE TURN", 5,30,WHITE_COLOR,0);
