@@ -1,5 +1,6 @@
 cd contrib
 cd reversi
+rm reversi.exe
 make
 make install
 cd ..
