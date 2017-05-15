@@ -1,22 +1,22 @@
 #include "../../sdk/dexsdk.h"
 #include "../../sdk/time.h"
 
+//--------------------------
+/*backend constants*/
 #define WHITE '1'
-#define BLACK '0'
-#define BLANK '-'
-#define CURRENT '*'
-#define UP 'a'
-#define DOWN 'd'
-#define RESET 'r'
-#define DROP ' '
-#define TRUE 1
-#define FALSE 0
+#define BLACK '0'	
+#define BLANK '-'   // no piece on the board yet
+#define CURRENT '*' // chosen position but not yet dropped down
+#define DROP ' '	// space bar to drop a piece
 #define CHECK 0
 #define PERFORM 1
-
 //---------------------------
+/*front end constants*/
 #define START_GAME 's'
 #define EXIT_GAME 'e'
+#define UP 'a'		
+#define DOWN 'd'	
+#define RESET 'r'	
 #define WHITE_COLOR 63
 #define BLUE_COLOR 1
 #define BLACK_COLOR 0
@@ -28,22 +28,23 @@
 #define MAGENTA_COLOR 5
 #define CYAN_COLOR 3
 //---------------------------
-
+/*global variables*/
 char matrix[8][8];
 int possibleMoves[64][2];
 int moveCounter;
 int blackCounter;
 int whiteCounter;
 char keypress;
+//----------------------------
+/*backend function prototypes*/
 void initMatrix();
 void startGame();
-int isValid(int row, int col);
 int listPossibleMoves(char color);
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action);
 int matrixIsNotFull();
-int boardCleared();
 int checkWinner();
 //-----------------------------
+/*frontend function prototypes*/
 void erase();
 void printInitialBoard();
 void printPiece(int x, int y, int color);
@@ -60,13 +61,13 @@ int main(){
 	
 
 	do{
-		initMatrix();
+		initMatrix();					// calls initMatrix to reset all values in the board
 		erase(0,0,320,200);
 		printMenu();
 		keypress=(char)getch();
 		erase(0,0,320,200);
 
-		if(keypress == START_GAME){
+		if(keypress == START_GAME){ //starts the game
 			while(1){
 				initMatrix();
 				startGame();
@@ -89,10 +90,14 @@ void startGame(){
 	printInitialBoard();
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
-		if(listPossibleMoves(move) == 0){
+		if(listPossibleMoves(move) == 0){ 
+			//checks if the current player has a valid move
 			if(listPossibleMoves((turnCounter+1)%2) == 0) break;
+				// checks if the next player has a valid move as well
 			turnCounter++;
-			continue;
+			continue; 
+			// if current player has no valid move, the turn is given to the other player
+			// if both players have no valid move, the game is ended and a winner is determined
 		}
 		while(1){
 			printBoard(move);
@@ -101,25 +106,28 @@ void startGame(){
 			do{
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = CURRENT;
 				printPiece(possibleMoves[k][0],possibleMoves[k][1],GRAY_COLOR);
+				// switches the space's color to gray when it is the chosen position
 				matrix[possibleMoves[k][0]][possibleMoves[k][1]] = BLANK;
 				keypress=(char)getch();
-				if(keypress == UP){
+				if(keypress == UP){ //traverses to the list of possible moves
 					erasePiece(possibleMoves[k][0],possibleMoves[k][1]);
 					k = k-1;
 					if(k == -1) k = moveCounter-1;
 				} 
-				if(keypress == DOWN){
+				if(keypress == DOWN){ // traverses to the list of possible moves
 					erasePiece(possibleMoves[k][0],possibleMoves[k][1]);
 					k = (k+1) % moveCounter;
 				}
-				if(keypress == EXIT_GAME || keypress == RESET){
+				if(keypress == EXIT_GAME || keypress == RESET){ // goes back to main menu 
 					return;
 				}
 			} while(keypress!=DROP);
-
-			row = possibleMoves[k][0];
+			// gets the chosen move on the list of possible moves
+			row = possibleMoves[k][0]; 
 			column = possibleMoves[k][1];
-			printPiece(row,column,move);
+			printPiece(row,column,move); 
+			// temp is just a holder for the return value.
+			// it is not important in this function 
 			temp = checkAdjacents(row-1, column-1, -1, -1,move , row, column, PERFORM);
 			temp = checkAdjacents(row-1, column  , -1,  0,move , row, column, PERFORM);
 			temp = checkAdjacents(row-1, column+1, -1,  1,move , row, column, PERFORM);
@@ -128,28 +136,30 @@ void startGame(){
 			temp = checkAdjacents(row+1, column-1,  1, -1,move , row, column, PERFORM);
 			temp = checkAdjacents(row+1, column  ,  1,  0,move , row, column, PERFORM);
 			temp = checkAdjacents(row+1, column+1,  1,  1,move , row, column, PERFORM);
-			matrix[row][column] = move;
-			turnCounter++;
+			matrix[row][column] = move; 
+			turnCounter++; // changes the turn
 			break;
 			
 		}
 
 	}
-	printBoard(move);					
-	checkWinner();
+	printBoard(move); 					
+	checkWinner(); 
+	/*calls this function after the board is filled or 
+	there are no more possible moves for both parties*/
 }
 
 
 int checkWinner(){
-
 	char blackCount[5];
 	char whiteCount[5];
 	int black = 0;
 	int white = 0;
 	int i,j;
+	// counts the black and white pieces to determine the winner
 	for(i = 0; i < 8; i++){
 		for(j = 0; j < 8; j++){
-			black += (matrix[i][j] == BLACK)?1:0;
+			black += (matrix[i][j] == BLACK)?1:0; 
 			white += (matrix[i][j] == WHITE)?1:0;
 		}
 	}
@@ -172,7 +182,8 @@ int checkWinner(){
 	keypress=(char)getch();
 	keypress = EXIT_GAME;
 }
-int listPossibleMoves(char color){
+int listPossibleMoves(char color){ 
+// creates a list of possible moves by the current user by using checkAdjacents to all pieces in the board
 	moveCounter = 0;
 	int row, column;
 	for(row = 0; row < 8; row++){
@@ -196,7 +207,7 @@ int listPossibleMoves(char color){
 	return moveCounter;
 }
 
-int count(){
+int count(){ 	// counts the number of black pieces and white pieces in the current board displayed
 	blackCounter = 0;
 	whiteCounter = 0;
 	int i,j;
@@ -207,6 +218,33 @@ int count(){
 		}
 	}
 }
+/*
+checkAdjacent is a recursive function wherein a certain coordinate is given
+and checks whether that coordinate has valid moves and can change a piece's
+color once dropped down.
+
+first if statement - checks if the current piece is already out of bounds or
+					 not within the board anymore
+second if statement -checks if the piece adjacent to it is the same with the
+					 chosen color's pieces. If so, it will not extend in 
+					 that portion
+third if statement - checks if the current position is blank
+fourth if statement - checks if the current position is the same color as the
+					  chosen piece. If so, all pieces between the current 
+					  position and the chosen position will change according
+					  to the color of the piece in the chosen position
+recursive call - 1st param and 2nd param: branches out from the original piece
+				 3rd param and 4th param: increments to the row and column
+				 						  depending on what condition to check
+				 5th param: color of the chosen piece
+				 6th param and 7th param: original value of the 1st and 2nd param
+				 						  in the first recursive iteration
+				 8th param: can be PERFORM or CHECK- CHECK: to see if it is a valid move
+				 									 PERFORM: to see if it is a valid move,
+				 									 		  and if so, performs flipping
+				 									 		  of pieces
+
+*/
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action){
 	if(row < 0 || row > 7 || col  < 0 || col > 7) return 0;
 	if(matrix[row][col] == color && (rowOrig + rowInc == row) && (colOrig + colInc == col)) return 0;
@@ -227,7 +265,7 @@ int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int row
 }
 
 
-int matrixIsNotFull(){
+int matrixIsNotFull(){ // checks if there are still blanks on the board that can be filled with pieces
 	int i, j;
 
 	for(i = 0; i < 8; i++){
@@ -245,11 +283,11 @@ void initMatrix(){
 	int i,j;
 	for(i = 0; i < 8; i++){
 		for(j = 0; j < 8; j++){
-			matrix[i][j] = BLANK;
+			matrix[i][j] = BLANK; // all the pieces in the board are removed
 		}
 	}
-	matrix[4][4] = matrix[3][3] = WHITE;
-	matrix[4][3] = matrix[3][4] = BLACK;
+	matrix[4][4] = matrix[3][3] = WHITE;	// places 2 white pieces on coordinates (4,4) and (3,3)
+	matrix[4][3] = matrix[3][4] = BLACK;	// places 2 white pieces on coordinates (4,4) and (3,3)
 }
 
 //-----------------------------------------------
@@ -332,7 +370,6 @@ void printInitialBoard(){
 			}
 		}
 	}
-	//printBoard(move);
 }
 
 void printBoard(char move){
