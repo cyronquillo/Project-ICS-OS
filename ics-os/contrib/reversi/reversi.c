@@ -90,6 +90,7 @@ void startGame(){
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
 		if(listPossibleMoves(move) == 0){
+			if(listPossibleMoves((turnCounter+1)%2) == 0) break;
 			turnCounter++;
 			continue;
 		}
