@@ -35,14 +35,12 @@ int moveCounter;
 int blackCounter;
 int whiteCounter;
 char keypress;
-void printMatrix();
 void initMatrix();
 void startGame();
 int isValid(int row, int col);
 int listPossibleMoves(char color);
 int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int rowOrig, int colOrig, int action);
 int matrixIsNotFull();
-void displayMoves(int k);
 int boardCleared();
 int checkWinner();
 //-----------------------------
@@ -86,9 +84,8 @@ int main(){
 }
 
 void startGame(){
-	int i, j, row = 0, column = 0, turnCounter = 0;
+	int i, j, row = 0, column = 0, turnCounter = 0,temp;
 	char move;
-	int possible;
 	printInitialBoard();
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
@@ -122,29 +119,17 @@ void startGame(){
 			row = possibleMoves[k][0];
 			column = possibleMoves[k][1];
 			printPiece(row,column,move);
-			if(row < 0 || row > 7 || column  < 0 || column > 7) {
-				printf("Invalid Input! \n");
-				continue;
-			}
-			else if(matrix[row][column] != BLANK){
-				printf("Space already occupied!\n");
-				continue;
-			}
-			if (checkAdjacents(row-1, column-1, -1, -1,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row-1, column  , -1,  0,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row-1, column+1, -1,  1,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row  , column-1,  0, -1,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row  , column+1,  0,  1,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row+1, column-1,  1, -1,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row+1, column  ,  1,  0,move , row, column, PERFORM)) possible = 1;
-			if (checkAdjacents(row+1, column+1,  1,  1,move , row, column, PERFORM)) possible = 1;
-			if(possible == 1){
-				matrix[row][column] = move;
-				turnCounter++;
-				break;
-			} else{
-				printf("No flipping occurred!\n");
-			}
+			temp = checkAdjacents(row-1, column-1, -1, -1,move , row, column, PERFORM);
+			temp = checkAdjacents(row-1, column  , -1,  0,move , row, column, PERFORM);
+			temp = checkAdjacents(row-1, column+1, -1,  1,move , row, column, PERFORM);
+			temp = checkAdjacents(row  , column-1,  0, -1,move , row, column, PERFORM);
+			temp = checkAdjacents(row  , column+1,  0,  1,move , row, column, PERFORM);
+			temp = checkAdjacents(row+1, column-1,  1, -1,move , row, column, PERFORM);
+			temp = checkAdjacents(row+1, column  ,  1,  0,move , row, column, PERFORM);
+			temp = checkAdjacents(row+1, column+1,  1,  1,move , row, column, PERFORM);
+			matrix[row][column] = move;
+			turnCounter++;
+			break;
 			
 		}
 
@@ -174,16 +159,12 @@ int checkWinner(){
 	write_text("White: ", 5, 50,WHITE_COLOR,0);
 	sprintf(whiteCount,"%d", white);
 	write_text(whiteCount, 80,50,WHITE_COLOR,0);
-	//printf("BLACK: %d WHITE: %d\n",black,white);
 	if(black > white)
 		write_text("Black Wins!", 10, 80,WHITE_COLOR,1); 
-		//printf("BLACK WINS!\n");
 	else if(white > black) 
 		write_text("White Wins!", 10, 80,WHITE_COLOR,1); 
-		//printf("WHITE WINS!\n");
 	else
 		write_text("Draw", 10, 80,WHITE_COLOR,1);  
-		//printf("DRAW!\n");
 	write_text("press any", 5, 170,WHITE_COLOR,0);
 	write_text("key to ", 5, 180,WHITE_COLOR,0);
 	write_text("exit...", 5, 190,WHITE_COLOR,0);
@@ -205,7 +186,6 @@ int listPossibleMoves(char color){
 					checkAdjacents(row+1, column  ,  1,  0,color , row, column, CHECK) ||
 					checkAdjacents(row+1, column+1,  1,  1,color , row, column, CHECK)){
 				moveCounter +=1;
-				// if(moveCounter == 1) printf("List of Possible Moves: \n");
 				possibleMoves[moveCounter-1][0] = row;
 				possibleMoves[moveCounter-1][1] = column;
 			}
@@ -213,15 +193,6 @@ int listPossibleMoves(char color){
 	}
 
 	return moveCounter;
-}
-
-void displayMoves(int k){
-	int i = 0;
-	for(i = 0; i < moveCounter; i++){
-		printf("(%d, %d)",possibleMoves[i][0]+1,possibleMoves[i][1]+1);
-		if(i == k) printf(" <");
-		printf("\n");
-	}
 }
 
 int count(){
@@ -253,21 +224,7 @@ int checkAdjacents(int row, int col, int rowInc, int colInc, char color, int row
 	}
 	checkAdjacents(row +rowInc, col + colInc, rowInc, colInc, color, rowOrig, colOrig, action);
 }
-void printMatrix(){
-	int i, j;
-	printf("\n\n\t");
-	printf("\n\t");
-	for(i = 1; i < 9; i++) printf("%d\t", i);
-	printf("\n\n");
-	for(i = 0; i < 8; i++){
-		printf("%d\t", i+1);
-		for(j = 0; j < 8; j++){
-			printf("%c\t", matrix[i][j]);
-		}
-		printf("\n\n");
 
-	}
-}
 
 int matrixIsNotFull(){
 	int i, j;
@@ -333,7 +290,7 @@ void printInitialBoard(){
 	write_text("A-Up", 5,45,WHITE_COLOR,0);
 	write_text("D-Down", 5,55,WHITE_COLOR,0);
 	write_text("Space-Drop", 5,65,WHITE_COLOR,0);
-	write_text("R-Reset", 5,180,WHITE_COLOR,0);
+	write_text("R-Reset Game", 5,180,WHITE_COLOR,0);
 	write_text("E-Exit", 5,190,WHITE_COLOR,0);
 
 	for(i=5;i<196;i++){
