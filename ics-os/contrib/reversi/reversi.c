@@ -24,6 +24,7 @@
 #define RED_COLOR 4
 #define GREEN_COLOR 2
 #define BROWN_COLOR 6
+#define LIGHT_BLUE_COLOR 9
 #define LIGHT_GREEN_COLOR 10
 #define MAGENTA_COLOR 5
 #define CYAN_COLOR 3
@@ -45,12 +46,19 @@ int matrixIsNotFull();
 void displayMoves(int k);
 int boardCleared();
 int checkWinner();
+
 //-----------------------------
 void erase();
 void printInitialBoard();
 void printPiece(int x, int y, int color);
 void erasePiece(int x, int y);
 void printBoard(char move);
+void printMenu();
+void set_graphics(int type);
+void write_pixel(int x, int y, int color);
+void write_text(char text[], int x, int y, int color, int size);
+void sprintf(char text[], char type[], int color);
+
 //-----------------------------
 
 int main(){
@@ -304,22 +312,84 @@ void erase(int x, int y, int w, int h){
          write_pixel(j,i,100);
 }
 
-printMenu(){
-	int i;
-	/*for(i=0;i<317;i+=6){
-		write_pixel(i,0,WHITE_COLOR);
-		write_pixel(i+1,0,WHITE_COLOR);
-		write_pixel(i+2,0,WHITE_COLOR);
+void printMenu(){
+	int i,j,temp;
+	for(i=0;i<320;i++){
+		for(j=0;j<200;j++){
+			write_pixel(i,j,LIGHT_GREEN_COLOR);
+		}
 	}
-	for(i=3;i<318;i+=6){
-		write_pixel(i,0,BLUE_COLOR);
-		write_pixel(i+1,0,BLUE_COLOR);
-		write_pixel(i+2,0,BLUE_COLOR);
-	}*/
-	write_text("---REVERSI---", 105,40,WHITE_COLOR,1);
 
-	write_text("S - Start", 120,100,WHITE_COLOR,0);
-	write_text("E - Exit", 120, 130,WHITE_COLOR,0);
+	temp=0;
+	for(i=40;i<=85;i++){
+		for(j=0;j<7;j++){
+			write_pixel(temp,i,WHITE_COLOR);
+			temp++;
+		}
+	}
+	write_pixel(0,86,LIGHT_GREEN_COLOR);
+	write_pixel(1,86,LIGHT_GREEN_COLOR);
+
+	for(i=10;i<310;i++){
+		write_pixel(i,10,GRAY_COLOR);
+		write_pixel(i,11,GRAY_COLOR);
+		write_pixel(i,188,GRAY_COLOR);
+		write_pixel(i,189,GRAY_COLOR);
+	}
+
+	for(i=10;i<190;i++){
+		write_pixel(10,i,GRAY_COLOR);
+		write_pixel(11,i,GRAY_COLOR);
+		write_pixel(308,i,GRAY_COLOR);
+		write_pixel(309,i,GRAY_COLOR);
+	}
+
+	for(i=125;i<195;i++){
+		write_pixel(i,55,BLACK_COLOR);
+		write_pixel(i,54,BLACK_COLOR);
+		write_pixel(i,79,BLACK_COLOR);
+		write_pixel(i,80,BLACK_COLOR);
+		write_pixel(i,56,LIGHT_BLUE_COLOR);
+		write_pixel(i,57,LIGHT_BLUE_COLOR);
+		write_pixel(i,77,LIGHT_BLUE_COLOR);
+		write_pixel(i,78,LIGHT_BLUE_COLOR);
+	}
+
+	write_pixel(124,56,BLACK_COLOR);
+	write_pixel(123,56,BLACK_COLOR);
+	write_pixel(195,56,BLACK_COLOR);
+	write_pixel(196,56,BLACK_COLOR);
+	write_pixel(124,57,BLACK_COLOR);
+	write_pixel(123,57,BLACK_COLOR);
+	write_pixel(195,57,BLACK_COLOR);
+	write_pixel(196,57,BLACK_COLOR);
+	write_pixel(124,78,BLACK_COLOR);
+	write_pixel(123,78,BLACK_COLOR);
+	write_pixel(195,78,BLACK_COLOR);
+	write_pixel(196,78,BLACK_COLOR);
+	write_pixel(124,77,BLACK_COLOR);
+	write_pixel(123,77,BLACK_COLOR);
+	write_pixel(195,77,BLACK_COLOR);
+	write_pixel(196,77,BLACK_COLOR);
+
+	for(i=58;i<77;i++){
+		write_pixel(121,i,BLACK_COLOR);
+		write_pixel(122,i,BLACK_COLOR);
+		write_pixel(197,i,BLACK_COLOR);
+		write_pixel(198,i,BLACK_COLOR);
+	}
+
+	for(i=58;i<77;i++){
+		for(j=123;j<197;j++){
+			write_pixel(j,i,LIGHT_BLUE_COLOR);
+		}
+	}
+
+
+	write_text("REVERSI", 130,60,BLACK_COLOR,1);
+
+	write_text("S-Start", 130,100,BLACK_COLOR,0);
+	write_text("E-Exit", 130, 130,BLACK_COLOR,0);
 }
 
 void printInitialBoard(){
@@ -385,11 +455,7 @@ void printBoard(char move){
 	char whitecounter[5];
 
 	erase(5,30,50,10);
-<<<<<<< HEAD
-	erase(5,95,95,20);
-=======
 	erase(5,95,100,20);
->>>>>>> 3cd5f0eb5343dc780c4f3e5fd91120adb9a23d90
 
 	if(move == WHITE){
 		write_text("WHITE TURN", 5,30,WHITE_COLOR,0);
@@ -498,6 +564,7 @@ void printPiece(int x, int y, int color){
 			write_pixel(j, yPosVerticalTopBound+i,fillcolor);
 		}
 	}
+
 }
 
 void erasePiece(int x, int y){
