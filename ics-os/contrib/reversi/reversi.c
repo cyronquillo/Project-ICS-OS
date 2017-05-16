@@ -48,11 +48,11 @@ int checkWinner();
 //-----------------------------
 /*frontend function prototypes*/
 void erase();
-void printInitialBoard();
+void printInitialBoardAndLegend();
 void printPiece(int x, int y, int color);
 void erasePiece(int x, int y);
-void printBoard(char move);
-void printMenu();
+void printTurnAndCount(char move);
+void printHeader();
 void set_graphics(int type);
 void write_pixel(int x, int y, int color);
 void write_text(char text[], int x, int y, int color, int size);
@@ -65,13 +65,12 @@ int main(){
 	keypress = START_GAME;
 
 	set_graphics(VGA_320X200X256);
-	//set_coordinates(X_coord, Y_coord);
 	
 
 	do{
 		initMatrix();					// calls initMatrix to reset all values in the board
 		erase(0,0,320,200);
-		printMenu();
+		printHeader();
 		keypress=(char)getch();
 		erase(0,0,320,200);
 
@@ -95,7 +94,7 @@ int main(){
 void startGame(){
 	int i, j, row = 0, column = 0, turnCounter = 0,temp;
 	char move;
-	printInitialBoard();
+	printInitialBoardAndLegend();
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
 		if(listPossibleMoves(move) == 0){ 
@@ -108,7 +107,7 @@ void startGame(){
 			// if both players have no valid move, the game is ended and a winner is determined
 		}
 		while(1){
-			printBoard(move);
+			printTurnAndCount(move);
 			int choice;
 			int k = 0;
 			do{
@@ -151,7 +150,7 @@ void startGame(){
 		}
 
 	}
-	printBoard(move); 					
+	printTurnAndCount(move); 					
 	checkWinner(); 
 	/*calls this function after the board is filled or 
 	there are no more possible moves for both parties*/
@@ -300,22 +299,22 @@ void initMatrix(){
 
 //-----------------------------------------------
 
-void erase(int x, int y, int w, int h){
+void erase(int x, int y, int w, int h){			//function  for erasing pixels
    int i,j;
    for (i=y;i<=(y+h);i++)
       for (j=x;j<=(x+w);j++)
          write_pixel(j,i,100);
 }
 
-void printMenu(){
+void printHeader(){								//the first thing you see when game is loaded
 	int i,j,temp;
 	for(i=0;i<320;i++){
 		for(j=0;j<200;j++){
-			write_pixel(i,j,LIGHT_GREEN_COLOR);
+			write_pixel(i,j,LIGHT_GREEN_COLOR);	//gives the light green background
 		}
 	}
 
-	temp=0;
+	temp=0;										//--------------from here
 	for(i=40;i<=85;i++){
 		for(j=0;j<7;j++){
 			write_pixel(temp,i,WHITE_COLOR);
@@ -325,29 +324,69 @@ void printMenu(){
 	write_pixel(0,86,LIGHT_GREEN_COLOR);
 	write_pixel(1,86,LIGHT_GREEN_COLOR);
 
-	for(i=10;i<310;i++){
+	temp=0;
+	for(i=115;i<179;i++){
+		for(j=0;j<5;j++){
+			write_pixel(temp,i,WHITE_COLOR);
+			temp++;
+		}
+	}
+
+	temp=100;
+	for(i=0;i<60;i++){
+		for(j=0;j<2;j++){
+			write_pixel(i,temp,WHITE_COLOR);	// creation of the white lines
+			temp--;
+		}
+	}
+
+	temp=200;
+	for(i=30;i<140;i++){
+		for(j=0;j<2;j++){
+			write_pixel(i,temp,WHITE_COLOR);
+			temp--;
+		}
+	}
+
+	temp=200;
+	for(i=120;i<230;i++){
+		for(j=0;j<2;j++){
+			write_pixel(i,temp,WHITE_COLOR);
+			temp--;
+		}
+	}
+
+	temp=200;
+	for(i=220;i<320;i++){
+		for(j=0;j<2;j++){
+			write_pixel(i,temp,WHITE_COLOR);
+			temp--;
+		}
+	}											//------------up to here
+
+	for(i=10;i<310;i++){						//--------start
 		write_pixel(i,10,GRAY_COLOR);
 		write_pixel(i,11,GRAY_COLOR);
 		write_pixel(i,188,GRAY_COLOR);
 		write_pixel(i,189,GRAY_COLOR);
 	}
-
+												// gray border
 	for(i=10;i<190;i++){
 		write_pixel(10,i,GRAY_COLOR);
 		write_pixel(11,i,GRAY_COLOR);
 		write_pixel(308,i,GRAY_COLOR);
-		write_pixel(309,i,GRAY_COLOR);
+		write_pixel(309,i,GRAY_COLOR);			//----------end
 	}
 
-	for(i=125;i<195;i++){
+	for(i=125;i<195;i++){						// from here
 		write_pixel(i,55,BLACK_COLOR);
 		write_pixel(i,54,BLACK_COLOR);
 		write_pixel(i,79,BLACK_COLOR);
 		write_pixel(i,80,BLACK_COLOR);
-		write_pixel(i,56,LIGHT_BLUE_COLOR);
-		write_pixel(i,57,LIGHT_BLUE_COLOR);
-		write_pixel(i,77,LIGHT_BLUE_COLOR);
-		write_pixel(i,78,LIGHT_BLUE_COLOR);
+		write_pixel(i,56,CYAN_COLOR);
+		write_pixel(i,57,CYAN_COLOR);
+		write_pixel(i,77,CYAN_COLOR);
+		write_pixel(i,78,CYAN_COLOR);
 	}
 
 	write_pixel(124,56,BLACK_COLOR);
@@ -357,7 +396,7 @@ void printMenu(){
 	write_pixel(124,57,BLACK_COLOR);
 	write_pixel(123,57,BLACK_COLOR);
 	write_pixel(195,57,BLACK_COLOR);
-	write_pixel(196,57,BLACK_COLOR);
+	write_pixel(196,57,BLACK_COLOR);			// box containing the title "Reversi"
 	write_pixel(124,78,BLACK_COLOR);
 	write_pixel(123,78,BLACK_COLOR);
 	write_pixel(195,78,BLACK_COLOR);
@@ -376,35 +415,27 @@ void printMenu(){
 
 	for(i=58;i<77;i++){
 		for(j=123;j<197;j++){
-			write_pixel(j,i,LIGHT_BLUE_COLOR);
+			write_pixel(j,i,CYAN_COLOR);
 		}
-	}
-
+	}											// to here
 
 	write_text("REVERSI", 130,60,BLACK_COLOR,1);
-
-	write_text("S-Start", 130,100,BLACK_COLOR,0);
+	write_text("S-Start", 130,100,BLACK_COLOR,0);		// title and options
 	write_text("E-Exit", 130, 130,BLACK_COLOR,0);
 }
 
-void printInitialBoard(){
+void printInitialBoardAndLegend(){
 	int i,j;
-	/*erase(5,30,50,10);
-	if(move == WHITE){
-		write_text("WHITE TURN", 5,30,WHITE_COLOR,0);
-	}
-	else{
-		write_text("BLACK TURN", 5,30,WHITE_COLOR,0);
-	}*/
+	
 	write_text("A-Up", 5,45,WHITE_COLOR,0);
 	write_text("D-Down", 5,55,WHITE_COLOR,0);
-	write_text("Space-Drop", 5,65,WHITE_COLOR,0);
+	write_text("Space-Drop", 5,65,WHITE_COLOR,0);			// printing of the legend
 	write_text("R-Reset Game", 5,180,WHITE_COLOR,0);
 	write_text("E-Exit", 5,190,WHITE_COLOR,0);
 
 	for(i=5;i<196;i++){
 		for(j=114;j<305;j++){
-			write_pixel(j,i,LIGHT_GREEN_COLOR);
+			write_pixel(j,i,LIGHT_GREEN_COLOR);				//light green background of the board
 		}
 	}
 	for(i=4;i<197;i++){ //vertical liness
@@ -432,7 +463,7 @@ void printInitialBoard(){
 
 	for(i=0;i<8;i++){
 		for(j=0;j<8;j++){
-			if(matrix[i][j] == WHITE){
+			if(matrix[i][j] == WHITE){						//printing of initial pieces
 				printPiece(i,j,WHITE);
 			}
 			else if(matrix[i][j] == BLACK){
@@ -442,7 +473,7 @@ void printInitialBoard(){
 	}
 }
 
-void printBoard(char move){
+void printTurnAndCount(char move){						//printing of whose turn it is
 	int i,j;
 
 	char blackcounter[5];
@@ -463,31 +494,29 @@ void printBoard(char move){
 	sprintf(whitecounter,"%d",whiteCounter);
 
 	write_text("Black: ", 5, 95, WHITE_COLOR,0);
-	write_text(blackcounter, 80, 95, WHITE_COLOR,0);
+	write_text(blackcounter, 80, 95, WHITE_COLOR,0);	//printing of the number of pieces for black and white
 
 	write_text("White: ", 5, 105, WHITE_COLOR,0);
 	write_text(whitecounter, 80, 105, WHITE_COLOR,0);
 
 }
 
-void printPiece(int x, int y, int color){
-
-	//int bordercolor = color == WHITE? BLACK_COLOR: WHITE_COLOR;
+void printPiece(int x, int y, int color){				//printing of pieces into the board
 
 	int i, j, bordercolor, fillcolor;
 
 	switch(color){
 		case WHITE: bordercolor = BLACK_COLOR;fillcolor = WHITE_COLOR;break;
-		case BLACK: bordercolor = WHITE_COLOR;fillcolor = BLACK_COLOR;break;
+		case BLACK: bordercolor = WHITE_COLOR;fillcolor = BLACK_COLOR;break;		//determining of color, if black/white turn or move guide
 		case GRAY_COLOR: bordercolor = GRAY_COLOR;fillcolor = GRAY_COLOR;break;
 	}
 
 	int verticalBoundPairStart = 120 + (x*24) - 1;
-	int verticalBoundPairEnd = verticalBoundPairStart + 12;
-	int yPosVerticalTopBound = 9 + (y*24) - 1;
+	int verticalBoundPairEnd = verticalBoundPairStart + 12;			//setting up of the initial coordinates of the 
+	int yPosVerticalTopBound = 9 + (y*24) - 1;						//pieces to be printed to corresponding position in the board
 	int yPosVerticalDownBound = yPosVerticalTopBound + 16;
 
-	for(i=verticalBoundPairStart;i<=verticalBoundPairEnd;i++){
+	for(i=verticalBoundPairStart;i<=verticalBoundPairEnd;i++){					// from here
 		write_pixel(i,yPosVerticalTopBound,bordercolor);
 		write_pixel(i,yPosVerticalDownBound,bordercolor);
 	}
@@ -499,7 +528,7 @@ void printPiece(int x, int y, int color){
 	write_pixel(verticalBoundPairStart-2,yPosVerticalTopBound+2, bordercolor);
 	write_pixel(verticalBoundPairStart-1,yPosVerticalTopBound+2, bordercolor);
 	write_pixel(verticalBoundPairEnd+1,yPosVerticalTopBound+2, bordercolor);
-	write_pixel(verticalBoundPairEnd+2,yPosVerticalTopBound+2, bordercolor);
+	write_pixel(verticalBoundPairEnd+2,yPosVerticalTopBound+2, bordercolor);	// creation of the border of the piece
 
 	write_pixel(verticalBoundPairStart-3,yPosVerticalTopBound+3, bordercolor);
 	write_pixel(verticalBoundPairStart-2,yPosVerticalTopBound+3, bordercolor);
@@ -509,7 +538,7 @@ void printPiece(int x, int y, int color){
 	write_pixel(verticalBoundPairStart-4,yPosVerticalTopBound+4, bordercolor);
 	write_pixel(verticalBoundPairStart-3,yPosVerticalTopBound+4, bordercolor);
 	write_pixel(verticalBoundPairEnd+3,yPosVerticalTopBound+4, bordercolor);
-	write_pixel(verticalBoundPairEnd+4,yPosVerticalTopBound+4, bordercolor);
+	write_pixel(verticalBoundPairEnd+4,yPosVerticalTopBound+4, bordercolor);	
 
 
 	for(i=5;i<13;i++){
@@ -535,9 +564,9 @@ void printPiece(int x, int y, int color){
 	write_pixel(verticalBoundPairStart-4,yPosVerticalDownBound-4, bordercolor);
 	write_pixel(verticalBoundPairStart-3,yPosVerticalDownBound-4, bordercolor);
 	write_pixel(verticalBoundPairEnd+3,yPosVerticalDownBound-4, bordercolor);
-	write_pixel(verticalBoundPairEnd+4,yPosVerticalDownBound-4, bordercolor);
+	write_pixel(verticalBoundPairEnd+4,yPosVerticalDownBound-4, bordercolor);	// to here
 
-	for(i=verticalBoundPairStart+1; i<verticalBoundPairEnd;i++){
+	for(i=verticalBoundPairStart+1; i<verticalBoundPairEnd;i++){		//from here
 		write_pixel(i, yPosVerticalTopBound+1,fillcolor);
 		write_pixel(i, yPosVerticalDownBound-1,fillcolor);
 	}
@@ -545,7 +574,7 @@ void printPiece(int x, int y, int color){
 		write_pixel(i, yPosVerticalTopBound+2,fillcolor);
 		write_pixel(i, yPosVerticalDownBound-2,fillcolor);
 	}
-	for(i=verticalBoundPairStart-1; i<verticalBoundPairEnd+2;i++){
+	for(i=verticalBoundPairStart-1; i<verticalBoundPairEnd+2;i++){		// coloring of the inside of the piece
 		write_pixel(i, yPosVerticalTopBound+3,fillcolor);
 		write_pixel(i, yPosVerticalDownBound-3,fillcolor);
 	}
@@ -554,14 +583,14 @@ void printPiece(int x, int y, int color){
 		write_pixel(i, yPosVerticalDownBound-4,fillcolor);
 	}
 	for(i=5;i<12;i++){
-		for(j=verticalBoundPairStart-3; j<verticalBoundPairEnd+4;j++){
+		for(j=verticalBoundPairStart-3; j<verticalBoundPairEnd+4;j++){	//to here
 			write_pixel(j, yPosVerticalTopBound+i,fillcolor);
 		}
 	}
 
 }
 
-void erasePiece(int x, int y){
+void erasePiece(int x, int y){						// just enough coordinates to only erase a piece
 	int i, j;
 	int startXErase = 114 + (x*24);
 	int endXErase = startXErase + 23;
