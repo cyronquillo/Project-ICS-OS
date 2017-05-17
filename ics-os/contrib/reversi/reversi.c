@@ -97,11 +97,12 @@ void startGame(){
 	printInitialBoardAndLegend();
 	while(matrixIsNotFull()){
 		move = turnCounter %2 == 0? WHITE: BLACK;
-		if(listPossibleMoves(move) == 0){ 
+		if(listPossibleMoves(move) == 0){
 			//checks if the current player has a valid move
-			if(listPossibleMoves((turnCounter+1)%2) == 0) break;
-				// checks if the next player has a valid move as well
 			turnCounter++;
+			move = turnCounter %2 == 0? WHITE: BLACK;
+			if(listPossibleMoves(move) == 0) break;
+				// checks if the next player has a valid move as well
 			continue; 
 			// if current player has no valid move, the turn is given to the other player
 			// if both players have no valid move, the game is ended and a winner is determined
