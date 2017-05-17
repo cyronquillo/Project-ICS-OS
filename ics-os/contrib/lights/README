@@ -1,0 +1,20 @@
+Lights out Game for ICS-OS
+--------------------------------
+
+1. Extract from within ics-os source dir.
+
+   $tar xzvf lightsout.tar.gz
+   $cd contrib/lights
+   $make
+   $make install
+
+2. Perform the steps to install ics-os.
+   $cd ../..
+   $sudo make install 
+
+3. Run lightsout.exe inside ics-os
+
+Enjoy!
+
+John Paul Ibay 2007-67611
+Angelo de la Vina 2007-67724
